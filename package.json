@@ -1,0 +1,25 @@
+{
+  "name": "getswift",
+  "version": "1.0.0",
+  "description": "coding challenge",
+  "main": "index.js",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "node-fetch": "^1.7.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwpeifer/GSCodeChallenge.git"
+  },
+  "author": "Isaac Peifer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iwpeifer/GSCodeChallenge/issues"
+  },
+  "homepage": "https://github.com/iwpeifer/GSCodeChallenge#readme"
+}
