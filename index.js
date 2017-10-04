@@ -26,5 +26,4 @@ let initialize = () => {
 
 }
 
-
 app = initialize();
