@@ -1,15 +1,16 @@
 let Adapter = require('./adapters');
 let App = require('./models/App.js');
 
-function initialize() {
+let initialize = () => {
   let app = new App();
-  Adapter.drones().then(drones => {
+
+  let p1 = Adapter.drones().then(drones => {
     app.drones = drones;
   });
-  Adapter.packages().then(packages => {
+  let p2 = Adapter.packages().then(packages => {
     app.packages = packages;
   });
-  Adapter.geocode().then(coords => {
+  let p3 = Adapter.geocode().then(coords => {
     let lat = coords.results[0].geometry.location.lat;
     let lng = coords.results[0].geometry.location.lng;
     app.location = {
@@ -17,7 +18,12 @@ function initialize() {
       longitude: lng
     }
   })
-  return app;
+  
+  Promise.all([p1, p2, p3]).then(() => {
+    app.assign(app.packages, app.drones);
+  }).catch(() => new Error('App could not be inititalized.'))
+
 }
+
 
 app = initialize();

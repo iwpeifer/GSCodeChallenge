@@ -16,7 +16,6 @@ class App {
       }
       return 0;
     })
-    return this.drones;
   }
 
   sortPackagesByDeadline() { //sort packages by deadline in ascending order, also assigns each package a distance in km
@@ -31,13 +30,50 @@ class App {
       }
       return 0;
     })
-    return this.packages;
   }
 
-  //TODO: Assign packages to drones
-  //        => add drone.distance to package.distance and calculate time (50kmph)
-  //          => if package deadline cannot be made, put it in unassignedPackages array and discard drone(?)
-  //          => if package can be assigned to drone, put it in assignments array
+  sortItems() {
+    this.sortDronesByDistance();
+    this.sortPackagesByDeadline();
+  }
+
+  assign(packages, drones) {
+
+    let result = {assignments: [], unassignedPackageIds: []};
+
+    let timeToDeliver = (a, b) => {
+      return (((a.distance + b.distance) / 50) * 60) * 60; //returns time in seconds to make a delivery
+    }
+
+    let deadlineInSeconds = (pack) => { //converts package.deadline into seconds
+      return pack.deadline - this.timeStamp
+    }
+
+    this.sortItems();
+    packages.forEach(pack => {
+        if (drones.length > 0) { //check to see if there are any more drones in list
+          if (timeToDeliver(drones[0], pack) < deadlineInSeconds(pack)) { //if drone can deliver package, it is assigned
+            let assignedDrone = drones.shift();
+            result.assignments.push({droneId: assignedDrone.droneId, packageId: pack.packageId});
+            return;
+          }
+          else { //if drone cannot deliver package, it cannot deliver any other package and is then removed
+            drones.shift();
+            result.unassignedPackageIds.push(pack.packageId);
+            return;
+          }
+        }
+        else { //if there are no more drones to make deliveries, all remaining packages are unassigned
+          result.unassignedPackageIds.push(pack.packageId);
+          return;
+        }
+      })
+    console.log(`Total drones: ${this.drones.length}`);
+    console.log(`Total packages: ${this.packages.length}`);
+    console.log(`Total packages that can be delivered before deadline: ${result.assignments.length}`);
+    console.log(result);
+    return result;
+  }
 
 }
 
