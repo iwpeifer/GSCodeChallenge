@@ -7,7 +7,7 @@ let getDistance = (home, object) => {
         droneLong = drone.location.longitude;
 
     //if drone already has package, it must first drop off at destination
-    if (drone.packages > 0) {
+    if (drone.packages.length > 0) {
         let destinationLat = drone.packages[0].destination.latitude,
             destinationLong = drone.packages[0].destination.longitude,
             distanceToDestination = convertToKm(droneLat, droneLong, destinationLat, destinationLong),

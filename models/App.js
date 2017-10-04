@@ -37,7 +37,10 @@ class App {
     this.sortPackagesByDeadline();
   }
 
-  assign(packages, drones) {
+  assign() {
+
+    let packages = this.packages.map(pack => pack),
+        drones = this.drones.map(drone => drone);
 
     let result = {assignments: [], unassignedPackageIds: []};
 
@@ -49,7 +52,6 @@ class App {
       return pack.deadline - this.timeStamp
     }
 
-    this.sortItems();
     packages.forEach(pack => {
         if (drones.length > 0) { //check to see if there are any more drones in list
           if (timeToDeliver(drones[0], pack) < deadlineInSeconds(pack)) { //if drone can deliver package, it is assigned
@@ -57,8 +59,7 @@ class App {
             result.assignments.push({droneId: assignedDrone.droneId, packageId: pack.packageId});
             return;
           }
-          else { //if drone cannot deliver package, it cannot deliver any other package and is then removed
-            drones.shift();
+          else { //if nearest drone cannot deliver package in time, no other drone will be able to and package is left unassigned
             result.unassignedPackageIds.push(pack.packageId);
             return;
           }
@@ -67,7 +68,7 @@ class App {
           result.unassignedPackageIds.push(pack.packageId);
           return;
         }
-      })
+      });
     console.log(`Total drones: ${this.drones.length}`);
     console.log(`Total packages: ${this.packages.length}`);
     console.log(`Total packages that can be delivered before deadline: ${result.assignments.length}`);

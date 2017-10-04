@@ -18,9 +18,10 @@ let initialize = () => {
       longitude: lng
     }
   })
-  
+
   Promise.all([p1, p2, p3]).then(() => {
-    app.assign(app.packages, app.drones);
+    app.sortItems();
+    return app.assign();
   }).catch(() => new Error('App could not be inititalized.'))
 
 }
