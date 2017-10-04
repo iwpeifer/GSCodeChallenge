@@ -14,7 +14,7 @@ class Adapter {
       .then(response => response.json());
   }
 
-  static geocode(address) {
+  static geocode() {
     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyB80MQ7VcG-FH3q_VIjvG-6SZG52lqKNok`)
       .then(response => response.json());
     }
