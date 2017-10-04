@@ -5,7 +5,7 @@ class App {
 
   sortDronesByDistance() {
 
-    function getDistanceKm(lat1, lon1, lat2, lon2) {
+    function convertToKm(lat1, lon1, lat2, lon2) {
       //Haversine Formula
 
       function deg2rad(deg) {
@@ -18,32 +18,39 @@ class App {
       var a =
         Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon/2) * Math.sin(dLon/2)
-        ;
+        Math.sin(dLon/2) * Math.sin(dLon/2);
       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
       var d = R * c; // Distance in km
       return d;
     }
 
-    function startPosition(drone) {
+    let depotLat = this.location.latitude,
+        depotLong = this.location.longitude;
+
+    function getDistance(drone) {
+
+      let droneLat = drone.location.latitude,
+          droneLong = drone.location.longitude;
+
       if (drone.packages > 0) {
-        return drone.packages[0].destination;
-      }
-      return drone.location;
+            let destinationLat = drone.packages[0].destination.latitude,
+                destinationLong = drone.packages[0].destination.longitude,
+                distanceToDestination = convertToKm(droneLat, droneLong, destinationLat, destinationLong),
+                distanceFromDestinationToDepot = convertToKm(destinationLat, destinationLong, depotLat, depoLong);
+
+            return distanceToDestination + distanceFromDestinationToDepot;
+        }
+      let distanceToDepot = convertToKm(droneLat, droneLong, depotLat, depotLong);
+      return distanceToDepot;
     }
 
-    let latitude = this.location.latitude;
-    let longitude = this.location.longitude;
-
     this.drones.sort((a, b) => {
-      let distanceA = getDistanceKm(startPosition(a).latitude, startPosition(a).longitude, latitude, longitude);
-      a.distance = distanceA;
-      let distanceB = getDistanceKm(startPosition(b).latitude, startPosition(b).longitude, latitude, longitude);
-      b.distance = distanceB;
-      if (distanceA < distanceB) {
+      a.distance = getDistance(a);
+      b.distance = getDistance(b);
+      if (a.distance < b.distance) {
         return -1;
       }
-      if (distanceA > distanceB) {
+      if (a.distance > b.distance) {
         return 1;
       }
       return 0;
