@@ -1,5 +1,3 @@
-const repl = require('repl');
-
 let Adapter = require('./adapters');
 let App = require('./models/App.js');
 
