@@ -14,7 +14,7 @@ The algorithm I put into place works as follows:
 
   1. Drones are sorted in ascending order by current distance away from depot (where they are to pick up packages).
 
-    (if a drone is already in the process of delivering a package, the distance from its current location to its destination is added to its distance to the depot).
+    if a drone is already in the process of delivering a package, the distance from its current location to its destination is added to its distance to the depot.
 
   2. Packages are sorted in ascending order by deadline. During the sorting process for both packages and drones, the getDistance method (located in the *utilities* folder) uses the Haversine formula to give each object a total distance from the depot (drones) or distance to destination (packages) depending on their latitude and longitudes.
 
