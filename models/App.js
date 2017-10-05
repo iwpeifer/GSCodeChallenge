@@ -1,34 +1,26 @@
+let getDistance = require('../utilities/getDistance.js');
+
 class App {
-  constructor() {
-    this.timeStamp = Math.round( Date.now() / 1000 );
-    this.getDistance = require('../utilities/getDistance.js');
+  constructor(location, drones, packages) {
+    this.location = location;
+    this.drones = drones;
+    this.packages = packages;
+    this.timestamp = Math.round( Date.now() / 1000 );
   }
 
   sortDronesByDistance() { //sort drones by distance needed to travel to depot in ascending order
     this.drones.sort((a, b) => {
-      a.distance = this.getDistance(this.location, a);
-      b.distance = this.getDistance(this.location, b);
-      if (a.distance < b.distance) {
-        return -1;
-      }
-      if (a.distance > b.distance) {
-        return 1;
-      }
-      return 0;
+      a.distance = getDistance(this.location, a);
+      b.distance = getDistance(this.location, b);
+      return a.distance - b.distance;
     })
   }
 
   sortPackagesByDeadline() { //sort packages by deadline in ascending order, also assigns each package a distance in km
     this.packages.sort((a, b) => {
-      a.distance = this.getDistance(this.location, a);
-      b.distance = this.getDistance(this.location, b);
-      if (a.deadline < b.deadline) {
-        return -1;
-      }
-      if (a.deadline > b.deadline) {
-        return 1;
-      }
-      return 0;
+      a.distance = getDistance(this.location, a);
+      b.distance = getDistance(this.location, b);
+      return a.deadline - b.deadline;
     })
   }
 
@@ -38,7 +30,6 @@ class App {
   }
 
   assign() {
-
     let result = {assignments: [], unassignedPackageIds: []},
         packages = this.packages.map(pack => pack),
         drones = this.drones.map(drone => drone);
@@ -48,15 +39,14 @@ class App {
     }
 
     let deadlineInSeconds = (pack) => { //converts package.deadline into seconds
-      return pack.deadline - this.timeStamp
+      return pack.deadline - this.timestamp
     }
-
     packages.forEach(pack => {
       if (drones.length > 0) { //check to see if there are any more drones in list
         if (timeToDeliver(drones[0], pack) < deadlineInSeconds(pack)) { //if drone can deliver package, it is assigned
           let assignedDrone = drones.shift();
           result.assignments.push({droneId: assignedDrone.droneId, packageId: pack.packageId});
-        return;
+          return;
         }
         else { //if nearest drone cannot deliver package in time, no other drone will be able to and package is left unassigned
           result.unassignedPackageIds.push(pack.packageId);
